@@ -1,12 +1,5 @@
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 
-/* index.html------------------------------- */
-.inner_header {
-  margin-top: 25px;
-  font: inherit; /* 2 */
-  
-}
-
 .inner_button {
   color: #FFFFFF; /* 1 */
   padding-right: 10px;
@@ -19,8 +12,6 @@
   margin-left: 10px;
   font-size: 2em;
   color: #ffffff;
-  /**margin: 0.67em 0;
-  font-size: 2em;*/
 }
 
 /**
