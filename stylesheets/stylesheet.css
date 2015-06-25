@@ -1,5 +1,13 @@
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 
+
+.header_button {
+  padding-top: 10px;
+  font: inherit; /* 2 */
+  color: #FFFFFF; /* 1 */
+  
+}
+
 /**
  * 1. Set default font family to sans-serif.
  * 2. Prevent iOS text size adjust after orientation change, without disabling
@@ -257,13 +265,6 @@ textarea {
   margin: 0; /* 3 */
   font: inherit; /* 2 */
   color: inherit; /* 1 */
-}
-
-.header_button {
-  padding-top: 10px;
-  font: inherit; /* 2 */
-  color: #FFFFFF; /* 1 */
-  
 }
 
 /**
