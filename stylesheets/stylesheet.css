@@ -9,6 +9,9 @@
 
 .inner_button {
   color: #FFFFFF; /* 1 */
+  padding-right: 10px;
+  font-size: 20px;
+  font-style: bold;
 }
 
 /**
