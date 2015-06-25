@@ -259,7 +259,7 @@ textarea {
   color: inherit; /* 1 */
 }
 
-header_button {
+.header_button {
   margin-top: 10;
   font: inherit; /* 2 */
   color: inherit; /* 1 */
