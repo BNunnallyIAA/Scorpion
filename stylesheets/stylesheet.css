@@ -4,8 +4,11 @@
 .inner_header {
   margin: 15px;
   font: inherit; /* 2 */
-  color: #FFFFFF; /* 1 */
   
+}
+
+.inner_button {
+  color: #FFFFFF; /* 1 */
 }
 
 /**
