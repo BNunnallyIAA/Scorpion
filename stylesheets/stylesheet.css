@@ -259,6 +259,13 @@ textarea {
   color: inherit; /* 1 */
 }
 
+header_button {
+  margin-top: 10;
+  font: inherit; /* 2 */
+  color: inherit; /* 1 */
+  
+}
+
 /**
  * Address `overflow` set to `hidden` in IE 8/9/10/11.
  */
