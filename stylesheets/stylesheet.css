@@ -260,7 +260,7 @@ textarea {
 }
 
 .header_button {
-  margin-top: 10;
+  padding-top: 10;
   font: inherit; /* 2 */
   color: #FFFFFF; /* 1 */
   
