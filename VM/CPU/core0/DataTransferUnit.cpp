@@ -1255,6 +1255,34 @@ void invoke()
            lg.a(ss.str(), ss1.str());
         }
        break;
+       case 49: // r/w to input buffer
+       {
+        long ref = SDX;
+        if(SFC == 0){ // read input buffer
+           string buffer = core0.buf.str();
+           long b_size = buffer.size();
+           if(SCX == 0){ // get buffer size
+              SCR = b_size;
+              return;
+           }
+           else if(SCX == 1){ // get buffer data
+              core0.setr(0, ref++, b_size);
+              for(long i = 0; i < b_size; i++)
+                  core0.setr(0, ref++, (int) buffer.at(i));
+           }
+           buffer = "";
+        }
+        else if(SFC == 1){ // write to input buffer
+           if(SCX == 0) // clear input buffer
+             core0.buf.str("");
+           else if(SCX == 1){ // write to input buffer
+             long buf_sz = core0.getr(0, ref++);
+             for(long i = 0; i < buf_sz; i++)
+                  core0.buf << core0.getr(0, ref++);
+           }
+        }
+       }
+       break;
        case 50: // read to a file
         {
           data[0] = p1;

@@ -1,6 +1,7 @@
 #ifndef VCPU 
 #define VCPU 
 #include <string>
+#include <sstream>
 #include "../../Log/Log.h"
 #include "../x24Disassm/disassembler.h"
 using namespace std;
@@ -35,6 +36,7 @@ extern bool waiting;
         unsigned long long Get_UTime();
         void resetTime();
         void reset_UTime();
+        stringstream buf;
    };
 
 extern C0 core0;

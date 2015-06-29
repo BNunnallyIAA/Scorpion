@@ -24,17 +24,23 @@
 import <io/gpio>
 import <io/signal>
 
-class: 433Rf {
-   loadi PIN 10
+class: Rf {
+   loadi PIN 27
    loadi BIT 0
    .recieveBit:
      loadi readBit 1
      cp GPIO.PIN PIN
      wloop readBit readBitb
            call GPIO.read
-           ile GPIO.SIG[signal.HIGH]
+           same bit GPIO.SIG[signal.HIGH]
+           do bit
                cp BIT GPIO.SIG
                return recieveBit 1 
+           end
+           same bit GPIO.SIG[signal.LOW]
+           do bit
+               cp BIT GPIO.SIG
+               return recieveBit 1
            end
      endwl readBit readBitb     
      ret
@@ -52,35 +58,41 @@ class: 433Rf {
 }
 
 class: Main {
-   .main:
-     call 433Rf_Setup
-     call loop
-     ret
-
-   .433Rf_Setup:
-     cp GPIO.PIN 433Rf.PIN
+   .RfSetup:
+     cp GPIO.PIN Rf.PIN
      cp GPIO.DIR signal.IN
      call GPIO.export
      call GPIO.direction
-     print 'Rf Reciever setup.../n' 
+     printf 'Rf Reciever setup.../n' 
      ret
 
-   .loop: ; loop recieving bits of information
-     call recieveBit
-     print 'recieved bit: <v,433Rf.BIT>/n'
-     call recieveBit
-     print 'recieved bit: <v,433Rf.BIT>/n'
-     call recieveBit
-     print 'recieved bit: <v,433Rf.BIT>/n'
-     call recieveBit
-     print 'recieved bit: <v,433Rf.BIT>/n'
-     call recieveBit
-     print 'recieved bit: <v,433Rf.BIT>/n'
-     call recieveBit
-     print 'recieved bit: <v,433Rf.BIT>/n'
-     call recieveBit
-     print 'recieved bit: <v,433Rf.BIT>/n'
-     call recieveBit
-     print 'recieved bit: <v,433Rf.BIT>/n'
+
+   .main:
+     call RfSetup
+     call loop
      ret
+
+
+
+   .loop: ; loop recieving bits of information
+     call Rf.recieveBit
+     printf 'recieved bit: <v,Rf.BIT>/n'
+     call Rf.recieveBit
+     printf 'recieved bit: <v,Rf.BIT>/n'
+     call Rf.recieveBit
+     printf 'recieved bit: <v,Rf.BIT>/n'
+     call Rf.recieveBit
+     printf 'recieved bit: <v,Rf.BIT>/n'
+     call Rf.recieveBit
+     printf 'recieved bit: <v,Rf.BIT>/n'
+     call Rf.recieveBit
+     printf 'recieved bit: <v,Rf.BIT>/n'
+     call Rf.recieveBit
+     printf 'recieved bit: <v,Rf.BIT>/n'
+     call Rf.recieveBit
+     printf 'recieved bit: <v,Rf.BIT>/n'
+     ret
+
 }
+
+call Main.main

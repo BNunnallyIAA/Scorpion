@@ -54,25 +54,15 @@ long InputOutput::Write(int device,  long *data)
          }
          else if(data[0] == 2)
          {
-           if (stream.is_open()){
-             TMP = SDX;
-             TMP++;
-             int ch;
-             char wrd;
-             for(int i = 0; i < core0.getr(0, SDX); i++){
-                 ch = core0.getr(0, TMP++);
-                 wrd = ch;
-                 stream << wrd;
-             }
-           }
+           if (stream.is_open())
+              stream << core0.buf.str();
            else
             return -1;
          }
          else if(data[0] == 3)
          {
-           if (stream.is_open()){
+           if (stream.is_open())
              stream.close();
-           }
            else
             return -1;
          }
@@ -100,26 +90,35 @@ long InputOutput::Read(int device,  long *data)
                  file_name += core0.getr(0, i);
              return ibool(file_exists(file_name.c_str()));
           }
-          else if(data[0] == 3) // empty temporary file's contents
-          {
-             p = "";
-          }
           else if(data[0] == 6) // load the temporary file data to the ram
           {
              TMP = SDX + 1;
              int ch;
+             string data = core0.buf.str();
              for(long i = 0; i < p.length(); i++)
              {
-                  ch = p.at(i);
+                  ch = data.at(i);
                   core0.setr(0, TMP++, ch);
              }
+
           }
           else if(data[0] == 2) // save the file in a temporary location
           {
              if(file_exists(file_name.c_str())){
                  const char *f = file_name.c_str();
-                 tostring(f);
-                 core0.setr(0, SDX, p.length());
+                  string tmp;
+                  core0.buf.str(""); // flush out input buffer
+		  ifstream input(f);
+                  long length = 0;
+
+     		  while(!input.eof()) {
+         	    tmp = "";
+         	    getline(input, tmp);
+                    core0.buf << tmp;
+                    core0.buf << "\n";
+                  }
+
+                 core0.setr(0, SDX, core0.buf.str().size());
              }
              else
                return -1;

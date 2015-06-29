@@ -63,7 +63,7 @@ string getClock()
 {
   stringstream clock_speed;
 
-  double clock = 1000000 / core0.GetTime();
+  double clock = 1500000 / core0.GetTime();
   clock_speed << clock << "Khz";
   return clock_speed.str();
 }

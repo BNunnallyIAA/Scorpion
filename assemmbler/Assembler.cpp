@@ -22,6 +22,13 @@ bool isDigit(char digit);
 bool isLetter(char letter);
 void mapTokens(string token, int tType);
 
+struct l_map {
+    string name;
+    string module;
+    string _class;
+    long index;
+} ;
+
 #define nullptr ((void *)0)
 
 /* Token types */
@@ -39,7 +46,7 @@ int COMMAND = 0, STRING_LITERAL = 1,
     SPECIAL = 12;
 
 stringstream obj; // our obj file
-lmap *labels; // out labels
+l_map *labels; // out labels
 long linepos = 0, mapsize = 0;
 stringstream token, fName, lastFunc, member_func;
 bool instring = false, processedcommand, charLiteral = false;
@@ -674,7 +681,7 @@ int getbounds(string token)
         arg1Types[1] = STRING_LITERAL;   
 
         arg1Types[2] = STRING_LITERAL;            
-        if(Assembler::compile_only)
+        if(!Assembler::compile_only)
             flag = 3;
         return 1;
     }
@@ -684,7 +691,7 @@ int getbounds(string token)
         arg1Types[1] = STRING_LITERAL;   
 
         arg1Types[2] = STRING_LITERAL;            
-        if(Assembler::compile_only)
+        if(!Assembler::compile_only)
              flag = 3;
         return 1;
     }
@@ -825,7 +832,7 @@ int getbounds(string token)
 
         arg1Types[2] = RAM_ADDRESS;
         arg2Types[2] = STRING_LITERAL;            
-        if(Assembler::compile_only)
+        if(!Assembler::compile_only)
             flag = 3;
         return 2;
     }
@@ -1054,7 +1061,7 @@ void assemble(string filen, string content)
    if(flag == 0){
       member_func.str("!");
       flag = 1;
-      labels = new (nothrow) lmap[ l_size ];
+      labels = new (nothrow) l_map[ l_size ];
       if(labels == nullptr){
         cout << "nsc:   error: Could not allocate resources.\nA fatal error has occured: Program will now exit." << endl;
         exit(-1039439);

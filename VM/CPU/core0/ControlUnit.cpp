@@ -477,6 +477,8 @@ void fetch() // Ive managed to smush the fetch, decode, execute cycle into one m
 
 void C0::run0()
 {
+ core0.resetTime();
+ core0.reset_UTime(); // get actual real execution time
  while(System::Running)
        fetch();
 }
