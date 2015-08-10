@@ -55,7 +55,7 @@ public class PrintStream:
 	   nwline();
 	end
 	
-	public function print();
+	public function print(): end
 	
 	public function print(string stream):
 	   asm(print, 0, "print '<str,PrintStream.stream>'"); 

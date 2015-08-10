@@ -1,5 +1,6 @@
 import macros.*;
 import io.*;
+import console.*;
 import util.*;
 
 /*
@@ -7,8 +8,6 @@ import util.*;
 * This file will import all scorpion 
 * library files.
 *
-* WARNING: double importing file will 
-* result in a compiler failure!
 */
 public class StdLib:
      public function StdLib(): end

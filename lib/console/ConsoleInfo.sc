@@ -23,5 +23,20 @@
 public class ConsoleInfo:
    public ConsoleInfo(): end
    
+   public function getColorStatus():
+     int requestColor = 1;
+     asm(color_status, 0, "rmov sdx ConsoleInfo.requestColor\n" +			 
+                          "invoke 0x84 0\n" + 
+                          "r_mv scr ConsoleInfo.requestColor");
+     run_asm(color_status);                     
+   end
    
+   @ Set current console output text color
+   public function setColorStatus(int color):
+     int shiftColor = 1;
+     asm(color_status, 0, "rmov sdx ConsoleInfo.requestColor\n" +			 
+                          "invoke 0x84 0\n" + 
+                          "r_mv scr ConsoleInfo.requestColor");
+     run_asm(color_status);                     
+   end
 endclass

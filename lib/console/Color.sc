@@ -47,8 +47,8 @@ public class Color:
      return getCurrColor();
    end   
    
-   public function changeSystemColor(int color){
-   
-   }
+   public function changeSystemColor(int color):
+     System.console.println("Hello World");
+   end
    
 endclass

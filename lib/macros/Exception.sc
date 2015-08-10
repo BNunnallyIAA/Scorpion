@@ -24,13 +24,13 @@ public class Exception:
 
    public function break(Class klass, string message):
      String klas = klass.tostring();
-     asm(ethrow, 0):
-       throw Exception.klas, Exception.message
-     end
+     asm(ethrow, 0,
+       "throw Exception.klas, Exception.message");
      run_asm(ethrow);
    end
    
    public Exception(string msg): break(this, msg); end
    
+   public Exception(Class klass, string msg): break(klass, msg); end
   
 endclass
