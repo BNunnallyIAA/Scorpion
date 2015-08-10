@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2015 Braxton Nunnally
+* Copyright 2015 Braxton Nunnally
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
@@ -13,30 +13,24 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 *
-* main.ss
-* Reboot the Raspberry Pi
+* Scorpion Open Source Project
+* This file contains classes and methods that will be used as
+* library resources for the Scorpion programming language.
 *
-* Author: Braxton Nunnally
-* Date: 6/1/2015
-*/ 
+* Exception is the base class for throwing exceptions.
+*
+*/
+public class Exception:
 
-extern Mod.M1.m1
-extern Mod.M1.m2
-
-import '/home/pi/Desktop/GitHub/Scorpion/assemmbler/part.ss'
-
-module: Mod {
-  class: M1 {
-    .m1:
-      print 'm1/n'
-      ret
-
-     .m2:
-       print 'm2/n'
-       ret
-  }
-}
-
-call Mod.M1.m1
-call Mod.M1.m2
-
+   public function break(Class klass, string message):
+     String klas = klass.tostring();
+     asm(ethrow, 0):
+       throw Exception.klas, Exception.message
+     end
+     run_asm(ethrow);
+   end
+   
+   public Exception(string msg): break(this, msg); end
+   
+  
+endclass
