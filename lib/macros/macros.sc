@@ -64,16 +64,14 @@ public class Macros:
     end
     
     public function run(int index):
-      if(index < 0):
+      if( index < 0 ):
         @ run all instructions
         int i;
         for( i : (index + 1)):
           int instr = imap[i].instr;
           double[] arg_arry = imap[i].args;
-          asm(vm_run, 0):
-             adr args_adr Macros.arg_arry
-             execute instr, args_adr
-          end
+          asm(vm_run, 0, "adr args_adr Macros.arg_arry" +
+                         "execute instr, args_adr" );
           run_asm(vm_run);
         end
         return;
@@ -81,10 +79,8 @@ public class Macros:
       
       int instr = imap[index].instr;
       double[] arg_arry = imap[index].args;
-      asm(vm_run, 0):
-         adr args_adr Macros.arg_arry
-         execute instr, args_adr
-      end
+      asm(vm_run, 0, "adr args_adr Macros.arg_arry" +
+                     "execute instr, args_adr");
       run_asm(vm_run);
     end 
     
