@@ -39,8 +39,8 @@ public class Color:
 
    private function int getCurrColor():
      ConsoleInfo info;
-	 info = new ConsoleInfo();
-	 return info.getColorStatus();			 
+     info = new ConsoleInfo();
+     return info.getColorStatus();			 
    end
    
    public function int getCurrentSystemColor():
@@ -48,7 +48,15 @@ public class Color:
    end   
    
    public function changeSystemColor(int color):
-     System.console.println("Hello World");
+     ConsoleInfo info;
+     info = new ConsoleInfo();
+     info.setColorStatus(color);
+   end
+
+   public function changeSystemColorShade(int shade):
+     ConsoleInfo info;
+     info = new ConsoleInfo();
+     info.setColorStatus(shade, getCurrColor());
    end
    
 endclass

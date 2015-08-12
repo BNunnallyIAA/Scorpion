@@ -33,10 +33,17 @@ public class ConsoleInfo:
    
    @ Set current console output text color
    public function setColorStatus(int color):
-     int shiftColor = 1;
-     asm(color_status, 0, "rmov sdx ConsoleInfo.requestColor\n" +			 
-                          "invoke 0x84 0\n" + 
-                          "r_mv scr ConsoleInfo.requestColor");
+     int colorShade = 1;
+     asm(color_status, 0, "rmov sdx ConsoleInfo.colorShade\n" +
+                          "print '<col,color>/n'");			 
      run_asm(color_status);                     
+   end
+
+   
+    @ Set current console output text color and shade value
+   public function setColorStatus(int shade, int color):
+     asm(color_status, 0, "rmov sdx ConsoleInfo.shade\n" +
+                          "print '<col,color>/n'");
+     run_asm(color_status);
    end
 endclass

@@ -11,4 +11,5 @@ import util.*;
 */
 public class StdLib:
      public function StdLib(): end
+
 endclass
