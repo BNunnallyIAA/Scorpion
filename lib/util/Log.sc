@@ -53,12 +53,17 @@ public class Log:
    end
 
    function int print(int priority, string tag, string message):
-           if(LogManager.getPriority() <= priority):
-               return println(tag,message);
-           end
-           else:
-               return 0;
-           end
+      if(LogManager.isLogEnabled()):
+         if(LogManager.getPriority() <= priority):
+            return println(tag,message);
+         end
+         else:
+            return 0;
+         end
+      end
+      else:
+         return 0;
+      end
    end
 
 endclass
