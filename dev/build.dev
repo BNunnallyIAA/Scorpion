@@ -10,4 +10,11 @@
    { # Singing configs
        debug false 
    }
+
+   { # Logging
+       log true
+	   logPrecedence 7
+	   logFile ('file.log') # output file
+   }
 }
+# have img size in .spk header

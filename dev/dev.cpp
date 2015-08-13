@@ -3,15 +3,15 @@
 #include <stdio.h>
 #include <iostream>
 #include <unistd.h>
-#include <math.h>
 #include <stdlib.h>
 
 using namespace std;
 
 int index = 0;
 
+string dev = "{ # Application\n    name 'TestApplication' # Manditory\n   {\n          minDevVersion 7   # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t        # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
 
-string dev = "{ # Application\n   name 'TestApplication'        # Manditory\n   {\n       minDevVersion 7           # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t   versionNumber '0.0.7'     # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
+//string dev = "if( scope > 0 ) \ncout << missing } at end of file\n;\nelse if( scope < 0 )\ncout << unexpected char '}' at end of file vhdisfv nnshbdsj  vhsdsbfbdshjfkjnsdpoaiuweoph9fw8ygij yuds cxvefcvc bfdsvfyhj hx ivewhj iuvw << endl;\nelse { }\ncout << scope:  << scope\nreturn 0;";
 
 // Attributes
 string name = "TestApplication";
@@ -21,6 +21,10 @@ string version_number = "0.0.1.0";
 bool debug = false, loog = false;
 int logprecedence = 7;
 string logfile = "/usr/share/scorpion/log.txt";
+
+int response = 0;
+int linenum = 0;
+string file_name = "build.dev";
 
 // ------------------------ Attribute boolean
 bool nme = false, mdv = false, tdv = false, 
@@ -73,6 +77,7 @@ bool iscomment(char c)
 string lexedChars[100];
 int charindex = 0, charsize = 0;
 int scope = 0;
+bool instring = false;
 
 void lex(string line)
 {
@@ -80,7 +85,14 @@ void lex(string line)
   stringstream chars;
   for(int i = 0; i < line.length(); i++)
   {
-    if(iswhitespace(line.at(i)) || isbreaker(line.at(i))){
+    if(line.at(i) == '\''){
+        if(instring)
+          instring = false;
+        else
+          instring = true;
+    }
+    
+    if((iswhitespace(line.at(i)) || isbreaker(line.at(i))) && !instring){
       if(line.at(i) == '{')
         scope++;
       else if(line.at(i) == '}')
@@ -91,8 +103,14 @@ void lex(string line)
          chars.str("");
       }
     }
-    else if(iscomment(line.at(i)))
+    else if(iscomment(line.at(i))){
+      if(chars.str() != ""){
+         lexedChars[ charindex++ ] = chars.str();
+         charsize++;
+         chars.str("");
+      }
       break;
+    }
     else
      chars << "" << line.at(i);
   }
@@ -119,6 +137,22 @@ bool isodd(int x)
 
 string attribs[8] { "name", "minDevVersion", "targetDevVersion", "versionNumber",
                    "debug", "log", "logPrecedence", "logFile" };
+
+stringstream errormsg, warningmsg;
+int warnings, errors;
+
+void deverror(string message)
+{
+    response = -1;
+	errors++;
+    errormsg << "build error: " << file_name  << ":" << linenum << "  " << message << endl;
+}
+
+void devwarning(string message)
+{
+	warnings++;
+    warningmsg << "warning: " << file_name  << ":" << linenum << "  " << message << endl;
+}
 
 bool hasstring(string attrib)
 {
@@ -289,51 +323,91 @@ bool getbool(string data)
 void updateattrib(string attrib, string tag)
 {
     if(attrib == attribs[0]){ // name
-    if(nme == true)
-       cout << "warning: attribute:" << attrib << " has already been set\n";
+    if(nme == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
        name = getstring(tag);
        nme = true;
     }       
    else if(attrib == attribs[1]){ // minDevVersion
-    if(mdv == true)
-       cout << "warning: attribute:" << attrib << " has already been set\n";
+    if(mdv == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
        minDevVersion = getint(tag);
        mdv = true;
    }
    else if(attrib == attribs[2]){ // targetDevVersion
-    if(tdv == true)
-       cout << "warning: attribute:" << attrib << " has already been set\n";
+    if(tdv == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
        targetDevVersion = getint(tag);
        tdv = true;
    }
    else if(attrib == attribs[3]){ // versionNumber
-    if(vn == true)
-       cout << "warning: attribute:" << attrib << " has already been set\n";
+    if(vn == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
        version_number = getstring(tag);
        vn = true;
    }
    else if(attrib == attribs[4]){ // debug
-    if(db == true)
-       cout << "warning: attribute:" << attrib << " has already been set\n";
+    if(db == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
        debug = getbool(tag);
        db = true;
    }
    else if(attrib == attribs[5]){ // log
-    if(lg == true)
-       cout << "warning: attribute:" << attrib << " has already been set\n";
+    if(lg == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
        loog = getbool(tag);
        lg = true;
    }
    else if(attrib == attribs[6]){ // logPrecedence
-    if(lp == true)
-       cout << "warning: attribute:" << attrib << " has already been set\n";
+    if(lp == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
        logprecedence = getint(tag);
        lp = true;
    }
    else if(attrib == attribs[7]){ // logFile
-    if(lf == true)
-       cout << "warning: attribute:" << attrib << " has already been set\n";
-       logfile = getint(tag);
+    if(lf == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
+       logfile = getstring(tag);
        lf = true; 
    }
 }
@@ -345,7 +419,9 @@ void process()
    return;
   else {
     if(charsize > 2){
-       cout << " attribute: " << lexedChars[0] << " has too many tags!" << endl;
+       stringstream ss;
+       ss << "attribute:" << lexedChars[0] << " has too many tags!";
+       deverror(ss.str());
 	   return;
     }
     attrubute = lexedChars[0];
@@ -354,21 +430,74 @@ void process()
     if(isattribute(attrubute)){
        settag_type(attrubute);
        if(isvalid_tag(tag)){
-          cout << "the attribute:" << attrubute << " has a valid tag" << endl;
           updateattrib(attrubute, tag);
        }
-       else
-        cout << "the attribute:" << attrubute << " does not have a valid tag" << endl;
+       else{
+        stringstream ss;
+        ss << "attribute:" << attrubute << " tag is invalid";
+        deverror(ss.str());
+       }
     }
     else{
-     cout << "the attribute:" << attrubute << " is not a know attrubute";
+      stringstream ss;
+      ss << "attribute:" << attrubute << " is not a know attrubute";
+      deverror(ss.str());
     }
   }
 }
 
-int linenum = 0;
+void printwarnings()
+{
+	cout << "WARNINGS " << warnings << endl;
+	cout << warningmsg.str() << endl;
+}
+
+void printerrors()
+{
+	cout << "ERRORS " << errors << endl;
+	cout << errormsg.str() << endl;
+}
+
+int count = 0;
+string format(string data)
+{
+    if(count == 0){
+        count++;
+        stringstream ss;
+        ss << data << " ";
+        return ss.str();
+    }
+    else {
+       count++;
+       stringstream ss;
+       ss << " : " << data << " ";
+       return ss.str();
+    }
+}
+
+void checkattribs()
+{
+   stringstream ss;
+   ss << "";
+   if(!nme)
+      ss << format("name");
+   if(!mdv)
+      ss << format("minDevVersion");
+   if(!tdv)
+      ss << format("targetDevVersion");
+   if(!vn)
+      ss << format("versionNumber");
+      
+   if(ss.str() != ""){
+       stringstream sm;
+       sm << "missing required attribute(s): [ " << ss.str() << "]";
+       deverror(sm.str());
+   }
+}
+
 int main()
 {
+  cout << "Dev Build running..." << endl;
   while(!eof)
   {
     linenum++;
@@ -376,7 +505,7 @@ int main()
     line << nextLine();
   if(line.str() != "--?"){
     lex(line.str());
-   // printf("line: %d charsize: %d [ %s ]\n", linenum, charsize, getchars().c_str());
+//    printf("line: %d charsize: %d [ %s ]\n", linenum, charsize, getchars().c_str());
     process();
     charindex = 0;
     charsize = 0;
@@ -385,12 +514,37 @@ int main()
      break;
   }
 
-  if( scope > 0 )
-   cout << "missing } at end of file\n";
-  else if( scope < 0 )
-   cout << "unexpected char '}' at end of file" << endl;
+  checkattribs();
+  
+  cout << endl;
+  printwarnings();
+  printerrors();
+
+
+  cout << "name:" << name << endl;
+  cout << "minDevVersion:" << minDevVersion << endl;
+  cout << "targetDevVersion:" << targetDevVersion << endl;
+  cout << "versionNumber:" << version_number << endl;
+  cout << "debug:" << debug << endl;
+  cout << "log:" << loog << endl;
+  cout << "logPrecedence:" << logprecedence << endl;
+  cout << "logFile:" << logfile << endl;
+  
+  if( scope > 0 ){
+     stringstream ss;
+     ss << "missing } at end of file!";
+     deverror(ss.str());
+  }
+  else if( scope < 0 ){
+     stringstream ss;
+     ss << "unexpected char '}' at end of file";
+     deverror(ss.str());
+  }
   else { }
+  if(response != 0)
+     cout << "BUILD FAILED" << endl;
+  else
+     cout << "BUILD SUCCESSFUL" << endl;
   cout << "scope: " << scope;
   return 0;
 }
-
