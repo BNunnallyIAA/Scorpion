@@ -3,17 +3,11 @@
    name 'TestApplication'        # Manditory
    {
        minDevVersion 7           # Manditory
-   	   TargetDevVersion 7        # Manditory
+   	   targetDevVersion 7        # Manditory
 	   versionNumber '0.0.7'     # Manditory
    }
    
    { # Singing configs
        debug false 
-   }
-
-   { # Logging
-       log true
-	   logPrecedence 7
-	   logFile ('file.log') # output file
    }
 }

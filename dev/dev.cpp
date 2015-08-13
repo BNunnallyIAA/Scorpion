@@ -11,7 +11,21 @@ using namespace std;
 int index = 0;
 
 
-string dev = "{ # Application\n   name 'TestApplication'        # Manditory\n   {\n       minDevVersion 7           # Manditory\n   \t   TargetDevVersion 7        # Manditory\n\t   versionNumber '0.0.7'     # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
+string dev = "{ # Application\n   name 'TestApplication'        # Manditory\n   {\n       minDevVersion 7           # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t   versionNumber '0.0.7'     # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
+
+// Attributes
+string name = "TestApplication";
+int minDevVersion = 7;
+int targetDevVersion = 7;
+string version_number = "0.0.1.0";
+bool debug = false, loog = false;
+int logprecedence = 7;
+string logfile = "/usr/share/scorpion/log.txt";
+
+// ------------------------ Attribute boolean
+bool nme = false, mdv = false, tdv = false, 
+     vn = false, db = false, lp = false, lg = false, lf = false;
+
 
 bool eof = false;
 string nextLine()
@@ -103,16 +117,28 @@ bool isodd(int x)
   return false;
 }
 
-string attribs[9] { "name", "minDevVersion", "targetDevVersion", "versionNumber",
+string attribs[8] { "name", "minDevVersion", "targetDevVersion", "versionNumber",
                    "debug", "log", "logPrecedence", "logFile" };
 
-bool hasstring(string data)
+bool hasstring(string attrib)
 {
-   for(int i = 0; i < sizeof(attribs); i++)
-   {
-     if(data == attribs[i])
-       return true;
-   }
+   if(attrib == attribs[0]) // name
+      return true;
+   else if(attrib == attribs[1]) // minDevVersion
+      return true;
+   else if(attrib == attribs[2]) // targetDevVersion
+      return true;
+   else if(attrib == attribs[3]) // versionNumber
+      return true;
+   else if(attrib == attribs[4]) // debug
+      return true;
+   else if(attrib == attribs[5]) // log
+      return true;
+   else if(attrib == attribs[6]) // logPrecedence
+      return true;
+   else if(attrib == attribs[7]) // logFile
+      return true;
+   else
   return false;
 }
 
@@ -123,7 +149,7 @@ bool isattribute(string attb)
   return false;
 }
 
-string specificarry[5];
+string var1, var2;
 
 // The different Tag types
 int TYPE_STRING = 1;
@@ -131,15 +157,6 @@ int TYPE_NUMBER = 2;
 int TYPE_SPECIFIC = 3;
 
 int ETYPE = 0;
-
-void flush()
-{
-   specificarry[0] = "";
-   specificarry[1] = "";
-   specificarry[2] = "";
-   specificarry[3] = "";
-   specificarry[4] = "";
-}
 
 void settag_type(string attrib)
 {
@@ -153,15 +170,13 @@ void settag_type(string attrib)
     ETYPE = TYPE_STRING;
    else if(attrib == attribs[4]){ // debug
     ETYPE = TYPE_SPECIFIC;
-    flush();
-    specificarry[0] = "true";
-    specificarry[1] = "false";
+    var1 = "true";
+    var2 = "false";
    }
    else if(attrib == attribs[5]){ // log
     ETYPE = TYPE_SPECIFIC;
-    flush();
-    specificarry[0] = "true";
-    specificarry[1] = "false";
+    var1 = "true";
+    var2 = "false";
    }
    else if(attrib == attribs[6]) // logPrecedence
     ETYPE = TYPE_NUMBER;
@@ -218,11 +233,8 @@ bool isnumber(string data)
 
 bool isspecific(string data)
 {
-  for(int i = 0; i < 5; i++)
-  {
-     if(data == specificarry[i])
-      return true;
-  }
+  if(data == var1 || data == var2)
+     return true;
   return false;
 }
 
@@ -245,6 +257,87 @@ bool isvalid_tag(string tg)
  return false;
 }
 
+string getstring(string data)
+{
+    if(data.at(0) == '('){
+       stringstream ss;
+       for(int i = 2; i < data.length() - 2; i++)
+          ss << data.at(i);
+       return ss.str();
+    }
+    else{
+        stringstream ss;
+       for(int i = 1; i < data.length() - 1; i++)
+          ss << data.at(i);
+       return ss.str();
+    }
+}
+
+int getint(string data)
+{
+   return atoi(data.c_str());   
+}
+
+bool getbool(string data)
+{
+    if(data == "true")
+      return true;
+    else
+      return false;
+}
+
+void updateattrib(string attrib, string tag)
+{
+    if(attrib == attribs[0]){ // name
+    if(nme == true)
+       cout << "warning: attribute:" << attrib << " has already been set\n";
+       name = getstring(tag);
+       nme = true;
+    }       
+   else if(attrib == attribs[1]){ // minDevVersion
+    if(mdv == true)
+       cout << "warning: attribute:" << attrib << " has already been set\n";
+       minDevVersion = getint(tag);
+       mdv = true;
+   }
+   else if(attrib == attribs[2]){ // targetDevVersion
+    if(tdv == true)
+       cout << "warning: attribute:" << attrib << " has already been set\n";
+       targetDevVersion = getint(tag);
+       tdv = true;
+   }
+   else if(attrib == attribs[3]){ // versionNumber
+    if(vn == true)
+       cout << "warning: attribute:" << attrib << " has already been set\n";
+       version_number = getstring(tag);
+       vn = true;
+   }
+   else if(attrib == attribs[4]){ // debug
+    if(db == true)
+       cout << "warning: attribute:" << attrib << " has already been set\n";
+       debug = getbool(tag);
+       db = true;
+   }
+   else if(attrib == attribs[5]){ // log
+    if(lg == true)
+       cout << "warning: attribute:" << attrib << " has already been set\n";
+       loog = getbool(tag);
+       lg = true;
+   }
+   else if(attrib == attribs[6]){ // logPrecedence
+    if(lp == true)
+       cout << "warning: attribute:" << attrib << " has already been set\n";
+       logprecedence = getint(tag);
+       lp = true;
+   }
+   else if(attrib == attribs[7]){ // logFile
+    if(lf == true)
+       cout << "warning: attribute:" << attrib << " has already been set\n";
+       logfile = getint(tag);
+       lf = true; 
+   }
+}
+
 string attrubute = "", tag = "";
 void process()
 {
@@ -253,16 +346,16 @@ void process()
   else {
     if(charsize > 2){
        cout << " attribute: " << lexedChars[0] << " has too many tags!" << endl;
+	   return;
     }
     attrubute = lexedChars[0];
     tag = lexedChars[1];
 
     if(isattribute(attrubute)){
-      cout << "setting" << endl;
        settag_type(attrubute);
-      cout << "checking" << endl;
        if(isvalid_tag(tag)){
           cout << "the attribute:" << attrubute << " has a valid tag" << endl;
+          updateattrib(attrubute, tag);
        }
        else
         cout << "the attribute:" << attrubute << " does not have a valid tag" << endl;
@@ -276,8 +369,6 @@ void process()
 int linenum = 0;
 int main()
 {
-  cout << "flushing" << endl;
-  flush();
   while(!eof)
   {
     linenum++;
@@ -285,15 +376,15 @@ int main()
     line << nextLine();
   if(line.str() != "--?"){
     lex(line.str());
-    printf("line: %d charsize: %d [ %s ]\n", linenum, charsize, getchars().c_str());
+   // printf("line: %d charsize: %d [ %s ]\n", linenum, charsize, getchars().c_str());
     process();
     charindex = 0;
     charsize = 0;
-//      cout << "line: " << line.str() << endl;
     }
-//    else
-//     return 0;
+   else
+     break;
   }
+
   if( scope > 0 )
    cout << "missing } at end of file\n";
   else if( scope < 0 )
@@ -302,3 +393,4 @@ int main()
   cout << "scope: " << scope;
   return 0;
 }
+
