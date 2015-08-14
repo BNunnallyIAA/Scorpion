@@ -17,7 +17,6 @@
 * Designed and developed by Braxton Nunnally
 *
 */
-
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -36,6 +35,8 @@ const char *minor_format_vers = "0.2";
 const char fv = 0xBB;
 const char mfv = 0xBA;
 const char targetdv = 0xBC, mindv = 0xBE; // the target and minimum dev version allowed
+const char vernum = 0xCB, debg = 0xCC, 
+	       lgg = 0xCD, lgpd = 0xCE, lgfle = 0xCF;
 
 // ------{ Img Flag Keys }------
 const char str = 0xBF; // string data ahead
@@ -45,7 +46,7 @@ const char strstart = '^';
 /*
 * dev_version
 * This is a numeric value representing the 
-* current build version the Scorpion Vurtual Machine 
+* current build version the Scorpion Virtual Machine 
 * is on. 
 *
 * This will mainly be used for developers who only want 
@@ -55,6 +56,9 @@ const char strstart = '^';
 const int dev_version = 7;
 
 short header = 0;
+int index; // where we are in the file
+stringstream image; // the image code to be executed
+stringstream spk; // the actual application file saved in memory
 
 bool hasmagic(const char *m)
 {
@@ -65,10 +69,15 @@ bool hasmagic(const char *m)
 
 bool isheaderkey(const char key)
 {
-	if((key == headerbeginkey) || (key == headerendkey)){
-		header++;
+	if(key == headerbeginkey)
 	    return true;
-	}
+  return false;
+}
+
+bool isheaderclosekey(const char key)
+{
+	if(key == headerendkey)
+	    return true;
   return false;
 }
 
@@ -106,6 +115,23 @@ const char* getflag(const char key)
 		return "target dev version";
 	else if(key == mindv)
 		return "minor dev version";
+	else if(key == vernum)
+		return "version number";
+	else if(key == debg)
+		return "debug";
+	else if(key == lgg)
+		return "log";
+	else if(key == lgpd)
+		return "log precedence";
+	else if(key == lgfle)
+		return "log file";
 	else
 		return "?";
 }
+
+char nextchar()
+{
+	return spk.str().at(index++);
+}
+
+

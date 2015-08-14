@@ -9,7 +9,7 @@ using namespace std;
 
 int index = 0;
 
-string dev = "{ # Application\n    name 'TestApplication' # Manditory\n   {\n          minDevVersion 7   # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t        # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
+string dev = "{ # Application\n    name 'TestApplication' # Manditory\n   {\n          minDevVersion 7   # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t      versionNumber '0.0.2.68'  # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
 
 //string dev = "if( scope > 0 ) \ncout << missing } at end of file\n;\nelse if( scope < 0 )\ncout << unexpected char '}' at end of file vhdisfv nnshbdsj  vhsdsbfbdshjfkjnsdpoaiuweoph9fw8ygij yuds cxvefcvc bfdsvfyhj hx ivewhj iuvw << endl;\nelse { }\ncout << scope:  << scope\nreturn 0;";
 
@@ -18,7 +18,7 @@ string name = "TestApplication";
 int minDevVersion = 7;
 int targetDevVersion = 7;
 string version_number = "0.0.1.0";
-bool debug = false, loog = false;
+bool debug = false, loog = true;
 int logprecedence = 7;
 string logfile = "/usr/share/scorpion/log.txt";
 
@@ -135,7 +135,7 @@ bool isodd(int x)
   return false;
 }
 
-string attribs[8] { "name", "minDevVersion", "targetDevVersion", "versionNumber",
+string attribs[8] = { "name", "minDevVersion", "targetDevVersion", "versionNumber",
                    "debug", "log", "logPrecedence", "logFile" };
 
 stringstream errormsg, warningmsg;
@@ -513,7 +513,18 @@ int main()
    else
      break;
   }
-
+  
+  if( scope > 0 ){
+     stringstream ss;
+     ss << "missing '}' at end of file!";
+     deverror(ss.str());
+  }
+  else if( scope < 0 ){
+     stringstream ss;
+     ss << "unexpected char '}' at end of file.";
+     deverror(ss.str());
+  }
+  else { }
   checkattribs();
   
   cout << endl;
@@ -521,30 +532,19 @@ int main()
   printerrors();
 
 
-  cout << "name:" << name << endl;
+ /* cout << "name:" << name << endl;
   cout << "minDevVersion:" << minDevVersion << endl;
   cout << "targetDevVersion:" << targetDevVersion << endl;
   cout << "versionNumber:" << version_number << endl;
   cout << "debug:" << debug << endl;
   cout << "log:" << loog << endl;
   cout << "logPrecedence:" << logprecedence << endl;
-  cout << "logFile:" << logfile << endl;
+  cout << "logFile:" << logfile << endl;*/
   
-  if( scope > 0 ){
-     stringstream ss;
-     ss << "missing } at end of file!";
-     deverror(ss.str());
-  }
-  else if( scope < 0 ){
-     stringstream ss;
-     ss << "unexpected char '}' at end of file";
-     deverror(ss.str());
-  }
-  else { }
   if(response != 0)
      cout << "BUILD FAILED" << endl;
   else
      cout << "BUILD SUCCESSFUL" << endl;
-  cout << "scope: " << scope;
+ // cout << "scope: " << scope;
   return 0;
 }
