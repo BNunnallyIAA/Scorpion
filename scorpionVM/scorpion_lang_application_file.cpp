@@ -56,7 +56,7 @@ const char strstart = '^';
 const int dev_version = 7;
 
 short header = 0;
-int index; // where we are in the file
+int index = 0,  imgsize; // where we are in the file
 stringstream image; // the image code to be executed
 stringstream spk; // the actual application file saved in memory
 
@@ -134,4 +134,48 @@ char nextchar()
 	return spk.str().at(index++);
 }
 
+const char *getmagic()
+{
+	stringstream mg;
+	mg << nextchar() << nextchar() 
+	   << nextchar() << nextchar();
+	return mg.str().c_str();
+}
+
+void jumptoheader()
+{
+	for(int i = 0; i < spk.str().length(); i++)
+	{
+		if(nextchar() == headerbeginkey)
+			return;
+	}
+}
+
+void eatnull()
+{
+	for(int i = 0; i < spk.str().length(); i++)
+	{
+		if(nextchar() != offsetkey)
+			return;
+	}
+}
+
+void readheader()
+{
+	for(int i = 0; 
+}
+
+int parse(string _spk)
+{
+	spk << _spk;
+	if(hasmagic(getmagic()))
+	{
+		nextchar(); // eat offset char
+		jumptoheader();
+		readheader();
+	}
+	else{
+		cout << "failure magic number not found" << endl;
+	}
+}
 
