@@ -9,7 +9,7 @@ using namespace std;
 
 int index = 0;
 
-string dev = "{ # Application\n    name 'TestApplication' # Manditory\n   {\n          minDevVersion 7   # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t      versionNumber '0.0.2.68'  # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
+string dev = "{ # Application\n    name 'TestApplication' # Manditory\n   {\napp: ('../')\nsrc: ('../src')\n         minDevVersion 7   # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t      versionNumber '0.0.2.68'  # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
 
 //string dev = "if( scope > 0 ) \ncout << missing } at end of file\n;\nelse if( scope < 0 )\ncout << unexpected char '}' at end of file vhdisfv nnshbdsj  vhsdsbfbdshjfkjnsdpoaiuweoph9fw8ygij yuds cxvefcvc bfdsvfyhj hx ivewhj iuvw << endl;\nelse { }\ncout << scope:  << scope\nreturn 0;";
 
@@ -21,15 +21,22 @@ string version_number = "0.0.1.0";
 bool debug = false, loog = true;
 int logprecedence = 7;
 string logfile = "/usr/share/scorpion/log.txt";
+int compile_size = 0;
+string compilefiles[2000];
+int permission_size = 0;
+string permissions[3000];
+int include_size = 0;
+string include;
+string appdir, srcdir;
 
 int response = 0;
 int linenum = 0;
 string file_name = "build.dev";
 
 // ------------------------ Attribute boolean
-bool nme = false, mdv = false, tdv = false, 
+bool nme = false, mdv = false, tdv = false,
      vn = false, db = false, lp = false, lg = false, lf = false;
-
+bool app = false, src = false;
 
 bool eof = false;
 string nextLine()
@@ -53,6 +60,11 @@ string nextLine()
   return "--?";
 }
 
+int getcompile_size()
+{
+   return compile_size;
+}
+
 bool iswhitespace(char c)
 {
    if((c == '\t') || (c == ' ') || (c == '\n'))
@@ -64,7 +76,7 @@ bool isbreaker(char c)
 {
    if(c == '{' || c == '}')
      return true;
-  return false; 
+  return false;
 }
 
 bool iscomment(char c)
@@ -91,7 +103,7 @@ void lex(string line)
         else
           instring = true;
     }
-    
+
     if((iswhitespace(line.at(i)) || isbreaker(line.at(i))) && !instring){
       if(line.at(i) == '{')
         scope++;
@@ -135,8 +147,10 @@ bool isodd(int x)
   return false;
 }
 
-string attribs[8] = { "name", "minDevVersion", "targetDevVersion", "versionNumber",
-                   "debug", "log", "logPrecedence", "logFile" };
+#define ATTRIBS 13
+string attribs[ATTRIBS] = { "name", "minDevVersion", "targetDevVersion", "versionNumber",
+                   "debug", "log", "logPrecedence", "logFile", "compile", "permission",
+                   "app:", "src:", "include" };
 
 stringstream errormsg, warningmsg;
 int warnings, errors;
@@ -156,23 +170,10 @@ void devwarning(string message)
 
 bool hasstring(string attrib)
 {
-   if(attrib == attribs[0]) // name
-      return true;
-   else if(attrib == attribs[1]) // minDevVersion
-      return true;
-   else if(attrib == attribs[2]) // targetDevVersion
-      return true;
-   else if(attrib == attribs[3]) // versionNumber
-      return true;
-   else if(attrib == attribs[4]) // debug
-      return true;
-   else if(attrib == attribs[5]) // log
-      return true;
-   else if(attrib == attribs[6]) // logPrecedence
-      return true;
-   else if(attrib == attribs[7]) // logFile
-      return true;
-   else
+   for(int i = 0; i < ATTRIBS; i++){
+      if(attrib == attribs[i])
+         return true;
+   }
   return false;
 }
 
@@ -215,6 +216,16 @@ void settag_type(string attrib)
    else if(attrib == attribs[6]) // logPrecedence
     ETYPE = TYPE_NUMBER;
    else if(attrib == attribs[7]) // logFile
+    ETYPE = TYPE_STRING;
+   else if(attrib == attribs[8]) // compile
+    ETYPE = TYPE_STRING;
+   else if(attrib == attribs[9]) // permission
+    ETYPE = TYPE_STRING;
+   else if(attrib == attribs[10]) // app:
+    ETYPE = TYPE_STRING;
+   else if(attrib == attribs[11]) // src:
+    ETYPE = TYPE_STRING;
+   else if(attrib == attribs[12]) // include
     ETYPE = TYPE_STRING;
 }
 
@@ -309,7 +320,7 @@ string getstring(string data)
 
 int getint(string data)
 {
-   return atoi(data.c_str());   
+   return atoi(data.c_str());
 }
 
 bool getbool(string data)
@@ -332,7 +343,7 @@ void updateattrib(string attrib, string tag)
       cout<< "   build:" << attrib << "=UPDATED" << endl;
        name = getstring(tag);
        nme = true;
-    }       
+    }
    else if(attrib == attribs[1]){ // minDevVersion
     if(mdv == true){
        stringstream ss;
@@ -408,7 +419,45 @@ void updateattrib(string attrib, string tag)
     else
       cout<< "   build:" << attrib << "=UPDATED" << endl;
        logfile = getstring(tag);
-       lf = true; 
+       lf = true;
+   }
+    else if(attrib == attribs[8]){ // compile
+     if(compile_size == 0)
+       cout<< "   build:" << attrib << "=UPDATED" << endl;
+
+       compilefiles[compile_size++] = getstring(tag);
+   }
+   else if(attrib == attribs[9]){ // permission
+         if(permission_size == 0)
+           cout<< "   build:" << attrib << "=UPDATED" << endl;
+
+           permissions[permission_size++] = getstring(tag);
+   }
+   else if(attrib == attribs[10]){ // app:
+    if(app == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
+       appdir = getstring(tag);
+       app = true;
+   }
+   else if(attrib == attribs[11]){ // src:
+    if(src == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
+       srcdir = getstring(tag);
+       src = true;
+   }
+   else if(attrib == attribs[12]){ // include
+           include = getstring(tag); // include dev file
+           cout << "include: " << include << endl;
    }
 }
 
@@ -487,7 +536,13 @@ void checkattribs()
       ss << format("targetDevVersion");
    if(!vn)
       ss << format("versionNumber");
-      
+
+    if(!app)
+      ss << format("app");
+
+    if(!src)
+      ss << format("src");
+
    if(ss.str() != ""){
        stringstream sm;
        sm << "missing required attribute(s): [ " << ss.str() << "]";
@@ -513,7 +568,7 @@ int main()
    else
      break;
   }
-  
+
   if( scope > 0 ){
      stringstream ss;
      ss << "missing '}' at end of file!";
@@ -526,7 +581,7 @@ int main()
   }
   else { }
   checkattribs();
-  
+
   cout << endl;
   printwarnings();
   printerrors();
@@ -540,7 +595,7 @@ int main()
   cout << "log:" << loog << endl;
   cout << "logPrecedence:" << logprecedence << endl;
   cout << "logFile:" << logfile << endl;*/
-  
+
   if(response != 0)
      cout << "BUILD FAILED" << endl;
   else

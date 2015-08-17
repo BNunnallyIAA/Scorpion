@@ -16,5 +16,13 @@
 	   logPrecedence 7
 	   logFile ('file.log') # output file
    }
+
+   { # dependencies
+        compile ('lib/test-lib.tz')
+   }
+
+   { # security permissions
+       permission 'scorpion.security.permissions.READ_FILES'
+   }
 }
 # have img size in .spk header
