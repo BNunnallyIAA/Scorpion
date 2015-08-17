@@ -25,4 +25,5 @@
        permission 'scorpion.security.permissions.READ_FILES'
    }
 }
+
 # have img size in .spk header

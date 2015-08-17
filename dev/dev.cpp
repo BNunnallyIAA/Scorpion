@@ -26,7 +26,7 @@ string compilefiles[2000];
 int permission_size = 0;
 string permissions[3000];
 int include_size = 0;
-string include;
+string include = "";
 string appdir, srcdir;
 
 int response = 0;
