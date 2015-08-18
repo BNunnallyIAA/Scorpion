@@ -190,9 +190,11 @@ void x24Shutdown()
    lg.Shutdown();
 }
 
-void Start()
+void Run()
 {
-   malloc();
+
+   Alloc::scorpion_Init(stacksize, memset, "Main",
+                         0, Xmax, Xmin, getimage());
    CPU mprocessor;
    System::Running = true;
    mprocessor.Reset();
@@ -228,8 +230,8 @@ int main( int argc, const char **file )
 
   x86_log.prepare(VERBOSE,true);
 
-  if(OK(argc, file))
-      Start();
+  if(run(file) == 0)
+      Run();
   else
      cout << "scorpion: fatal err occured!...check '/usr/share/scorpion/log.txt' for error and system information\nuse -help for a list of options." << endl;
 

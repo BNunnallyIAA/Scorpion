@@ -9,7 +9,7 @@ using namespace std;
 
 int index = 0;
 
-string dev = "{ # Application\n    name 'TestApplication' # Manditory\n   {\napp: ('../')\nsrc: ('../src')\n         minDevVersion 7   # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t      versionNumber '0.0.2.68'  # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
+string dev = "{ # Application\n    name 'TestApplication' # Manditory\n   {\napp: ('../')\nsrc: ('../src')\napplicationId 'bdijeundsc'\ncompile 'jhbcunisdn'\n         minDevVersion 7   # Manditory\n   \t   targetDevVersion 7        # Manditory\n\t      versionNumber '0.0.2.68'  # Manditory\n   }\n   \n   { # Singing configs\n       debug false \n   }\n\n   { # Logging\n       log true\n\t   logPrecedence 7\n\t   logFile ('file.log') # output file\n   }\n}";
 
 //string dev = "if( scope > 0 ) \ncout << missing } at end of file\n;\nelse if( scope < 0 )\ncout << unexpected char '}' at end of file vhdisfv nnshbdsj  vhsdsbfbdshjfkjnsdpoaiuweoph9fw8ygij yuds cxvefcvc bfdsvfyhj hx ivewhj iuvw << endl;\nelse { }\ncout << scope:  << scope\nreturn 0;";
 
@@ -567,6 +567,29 @@ void checkattribs()
    }
 }
 
+bool fileexists(const char* file)
+{
+    return false;
+}
+
+void libchk()
+{
+    if(compile_size != 0){
+   cout << "\nChecking Libraries...\n";
+
+        for(int i = 0; i < compile_size; i++){
+            if(!fileexists(compilefiles[i].c_str())){
+                 stringstream sm;
+                 sm << "lib file: '" << compilefiles[i] << "' does not exist!";
+                 deverror(sm.str());
+            }
+            else {
+                // check extension
+            }
+        }
+    }
+}
+
 int main()
 {
   cout << "Dev Build running..." << endl;
@@ -586,6 +609,7 @@ int main()
      break;
   }
 
+  libchk();
   if( scope > 0 ){
      stringstream ss;
      ss << "missing '}' at end of file!";
