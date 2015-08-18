@@ -1,10 +1,11 @@
 
 { # Application
-   name 'TestApplication'        # Manditory
+   name 'TestApplication'
    {
-       minDevVersion 7           # Manditory
-   	   targetDevVersion 7        # Manditory
-	   versionNumber '0.0.7'     # Manditory
+       minDevVersion 7
+   	   targetDevVersion 7
+	   versionNumber '0.0.7'
+	   applicationId 'MDJS92JDT6E7'
    }
    
    { # Singing configs

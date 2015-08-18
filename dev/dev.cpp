@@ -28,6 +28,7 @@ string permissions[3000];
 int include_size = 0;
 string include = "";
 string appdir, srcdir;
+string applicationid;
 
 int response = 0;
 int linenum = 0;
@@ -36,7 +37,7 @@ string file_name = "build.dev";
 // ------------------------ Attribute boolean
 bool nme = false, mdv = false, tdv = false,
      vn = false, db = false, lp = false, lg = false, lf = false;
-bool app = false, src = false;
+bool app = false, src = false, aid = false;
 
 bool eof = false;
 string nextLine()
@@ -147,10 +148,10 @@ bool isodd(int x)
   return false;
 }
 
-#define ATTRIBS 13
+#define ATTRIBS 14
 string attribs[ATTRIBS] = { "name", "minDevVersion", "targetDevVersion", "versionNumber",
                    "debug", "log", "logPrecedence", "logFile", "compile", "permission",
-                   "app:", "src:", "include" };
+                   "app:", "src:", "include", "applicationId" };
 
 stringstream errormsg, warningmsg;
 int warnings, errors;
@@ -226,6 +227,8 @@ void settag_type(string attrib)
    else if(attrib == attribs[11]) // src:
     ETYPE = TYPE_STRING;
    else if(attrib == attribs[12]) // include
+    ETYPE = TYPE_STRING;
+   else if(attrib == attribs[13]) // applicationId
     ETYPE = TYPE_STRING;
 }
 
@@ -459,6 +462,17 @@ void updateattrib(string attrib, string tag)
            include = getstring(tag); // include dev file
            cout << "include: " << include << endl;
    }
+   else if(attrib == attribs[13]){ // applicationId
+    if(aid == true){
+       stringstream ss;
+       ss << "attribute:" << attrib << " has already been set.";
+       devwarning(ss.str());
+    }
+    else
+      cout<< "   build:" << attrib << "=UPDATED" << endl;
+       applicationid = getstring(tag);
+       aid = true;
+   }
 }
 
 string attrubute = "", tag = "";
@@ -542,6 +556,9 @@ void checkattribs()
 
     if(!src)
       ss << format("src");
+
+    if(!aid)
+      ss << format("applicationId");
 
    if(ss.str() != ""){
        stringstream sm;

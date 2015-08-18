@@ -36,7 +36,7 @@ const char fv = 0xBB;
 const char mfv = 0xBA;
 const char targetdv = 0xBC, mindv = 0xBE; // the target and minimum dev version allowed
 const char vernum = 0xCB, debg = 0xCC, 
-	       lgg = 0xCD, lgpd = 0xCE, lgfle = 0xCF;
+	       lgg = 0xCD, lgpd = 0xCE, lgfle = 0xCF, appid = 0xDA, permission = 0xDC;
 
 // ------{ Img Flag Keys }------
 const char str = 0xBF; // string data ahead
@@ -125,6 +125,10 @@ const char* getflag(const char key)
 		return "log precedence";
 	else if(key == lgfle)
 		return "log file";
+	else if(key == appid)
+		return "application Id";
+	else if(key == permission)
+		return "security permission";
 	else
 		return "?";
 }
@@ -160,22 +164,73 @@ void eatnull()
 	}
 }
 
-void readheader()
+string tillnull()
 {
-	for(int i = 0; 
+    stringstream ss;
+   for(int i = index; i < spk.str().length(); i++){
+      if(nextchar() != offsetkey){}
+        ss << spk.str().at(i);
+      }
+      else{}
+   }
 }
 
-int parse(string _spk)
+void parseformatvers()
 {
-	spk << _spk;
+   nextchar();
+   const char* fvers = tillnull();
+
+}
+
+int parse(string application)
+{
+	spk << application;
 	if(hasmagic(getmagic()))
 	{
-		nextchar(); // eat offset char
-		jumptoheader();
-		readheader();
+	    jumptoheader();
+		for(int i = index; i < application.length(); i++){
+		    if(application.at(i) == 0){ }
+		    else if(getflag(application.at(i)) != "?"){
+		         if(getflag(application.at(i)) == "format_version")
+		              parseformatvers();
+		         else if(getflag(application.at(i)) == "minor format version")
+		              parseminorformatvers();
+		         else if(getflag(application.at(i)) == "target dev version")
+		              parsetargetdev_vers();
+		         else if(getflag(application.at(i)) == "minor dev version")
+		              parseminordev_vers();
+		         else if(getflag(application.at(i)) == "version number")
+		              parseversionnum();
+		         else if(getflag(application.at(i)) == "debug")
+		              parsedebug();
+		         else if(getflag(application.at(i)) == "log")
+		              parselog();
+		         else if(getflag(application.at(i)) == "log precedence")
+		              setlogprecedence();
+		         else if(getflag(application.at(i)) == "log file")
+		              setlogfile();
+		         else if(getflag(application.at(i)) == "application Id")
+		              updateappid();
+		         else if(getflag(application.at(i)) == "security permission")
+		              addpermission();
+		         else if(application.at(i) == headerendkey)
+		               break;
+		         else{
+                      cout << "header is corrupt!";
+                      return -1;
+                 }
+
+		    }
+		    else{
+		       cout << "header is corrupt!";
+		       return -1;
+		    }
+            nextchar();
+		}
 	}
 	else{
 		cout << "failure magic number not found" << endl;
 	}
+	return 0;
 }
 
