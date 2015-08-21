@@ -1,0 +1,4 @@
+{ # application hierarchy builder
+   app: ('../app/')
+   src: ('src/')
+}

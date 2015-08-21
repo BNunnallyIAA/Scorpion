@@ -10,6 +10,7 @@
    
    { # Singing configs
        debug false 
+       isLib false
    }
 
    { # Logging
@@ -19,7 +20,7 @@
    }
 
    { # dependencies
-        compile ('lib/test-lib.tz')
+        compile ('lib/test-lib.sar')
    }
 
    { # security permissions
