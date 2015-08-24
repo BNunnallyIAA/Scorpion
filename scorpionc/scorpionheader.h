@@ -13,24 +13,32 @@
 using namespace std;
 
 #define MAX_LIMIT ((12 * 164) - 32)
-#define MAX_SIZE ((64 * 156) * 128)  // max byte size per file
+#define MAX_SIZE ((64 * 1020) * 1032)   // max image size per application file
 
-extern stringstream archive; // the actual file that will hold packaged files
+extern stringstream spk; // the actual file that will hold packaged files
+extern long SIZE, imagesize;  // the total permission size
 
 struct header {
     u4            magic;
     u2            minor_version;
     u2            major_version;
-    u1            sourcecount;         // The number of source files there are
-    string        *sourcefiles;        // The names of each source file
-    u1            filesize;            // The full size of all files in bytes
+    u1            target_dev_vers;
+    u1            minimum_dev_vers;
+    string        version_number;
+    u1            debug;
+    u1            logging;
+    u1            log_precedence;
+    string        log_file;
+    string        application_id;
+    string        *permissions;
+    u1            filesize;            // The full size of the image section in bytes
 };
 
 extern header h;
 
 class sheader {
     public:
-      static int makeheader(int size, string *files);
+      static int makeheader();
 };
 
 
