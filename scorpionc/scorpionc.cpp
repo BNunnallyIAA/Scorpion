@@ -1,5 +1,5 @@
 /*
-* Scorpion Compiler revision 6
+* Scorpion Compiler revision 7
 * version 0.2.0
 * build date: July 2015
 *
